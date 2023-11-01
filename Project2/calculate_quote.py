@@ -22,7 +22,7 @@ config = {
 }
 
 
-GOOGLE_MAPS_API_KEY = "AIzaSyC2YoC_ujO9bCJAVHwM6RmHcVNOTXZE8HI"
+GOOGLE_MAPS_API_KEY = "ZXZ"
 
 app = Flask(__name__)
 

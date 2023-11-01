@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Calculator</title>
+</head>
+<body>
+    <!-- ... [rest of the HTML code above the form] -->
+
+    <form id="quoteForm">
+        <h3>Origin Address</h3>
+        <input type="text" id="origin_street" placeholder="Street Address" required><br>
+        <input type="text" id="origin_city" placeholder="City" required><br>
+        <input type="text" id="origin_state" placeholder="State" required><br>
+        <input type="text" id="origin_zip" placeholder="Zip Code" required><br>
+        
+        <h3>Destination Address</h3>
+        <input type="text" id="dest_street" placeholder="Street Address" required><br>
+        <input type="text" id="dest_city" placeholder="City" required><br>
+        <input type="text" id="dest_state" placeholder="State" required><br>
+        <input type="text" id="dest_zip" placeholder="Zip Code" required><br>
+
+        <h3>Service Date and Time</h3>
+        <input type="date" id="service_date" required>
+        <input type="time" id="service_time" required><br>
+
+        <button type="submit">Get Quote</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('quoteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const data = {
+                address_1: document.getElementById('address_1').value,
+                address_2: document.getElementById('address_2').value,
+                time_of_week: document.getElementById('time_of_week').value,
+                out_of_state: document.getElementById('out_of_state').checked
+            };
+            
+            // Send data to backend
+            fetch('/calculate-quote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = 'Your quote is: $' + data.quote;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

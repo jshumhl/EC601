@@ -10,22 +10,13 @@
     <!-- ... [rest of the HTML code above the form] -->
 
     <form id="quoteForm">
+        <h2>Delivery Contact Form</h1>
         <h3>Personal Information</h3>
         <input type="text" id="customer_name" placeholder="Full Name" required><br>
         <input type="email" id="customer_email" placeholder="Email Address" required><br>
         <input type="tel" id="customer_phone" placeholder="Phone Number" pattern="[0-9]{10}" required>
 
-        <h3>Origin Address</h3>
-        <input type="text" id="origin_street" placeholder="Street Address" required><br>
-        <input type="text" id="origin_city" placeholder="City" required><br>
-        <div class="input-group">
-            <select id="origin_state" required>
-                <option value="" disabled selected style="color: #aaa;">Select State</option>
-            </select>
-            <input type="text" id="origin_zip" placeholder="Zip Code" required>
-        </div>
-        
-        <h3>Destination Address</h3>
+        <h3>Delivery Address</h3>
         <input type="text" id="dest_street" placeholder="Street Address" required><br>
         <input type="text" id="dest_city" placeholder="City" required><br>
         <div class="input-group">
@@ -35,7 +26,7 @@
             <input type="text" id="dest_zip" placeholder="Zip Code" required>
         </div>
 
-        <h3>Service Date and Time</h3>
+        <h3>Delivery Date and Time</h3>
         <input type="date" id="service_date" required>
         <input type="time" id="service_time" required><br>
 
@@ -72,7 +63,6 @@
             event.preventDefault();
             
             // Construct addresses from individual fields
-            const origin_address = `${document.getElementById('origin_street').value}, ${document.getElementById('origin_city').value}, ${document.getElementById('origin_state').value} ${document.getElementById('origin_zip').value}`;
             const dest_address = `${document.getElementById('dest_street').value}, ${document.getElementById('dest_city').value}, ${document.getElementById('dest_state').value} ${document.getElementById('dest_zip').value}`;
 
             const data = {
@@ -81,15 +71,10 @@
                 customer_phone: document.getElementById('customer_phone').value,
                 customer_email: document.getElementById('customer_email').value,
                 // map stuff
-                origin_address: origin_address,
                 dest_address: dest_address,
-                origin_street: document.getElementById('origin_street').value,
                 dest_street: document.getElementById('dest_street').value,
-                origin_city: document.getElementById('origin_city').value,
                 dest_city: document.getElementById('dest_city').value,
-                origin_zip: document.getElementById('origin_zip').value,
                 dest_zip: document.getElementById('dest_zip').value,
-                origin_state: document.getElementById('origin_state').value,
                 dest_state: document.getElementById('dest_state').value,
                 // date n time
                 service_date: document.getElementById('service_date').value,
@@ -108,8 +93,8 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('distance').textContent = 'Estimated quote is: $' + data.quote;
-                document.getElementById('duration').textContent = 'The approximate time is ' + data.time + ' minutes';
+                document.getElementById('distance').textContent = data.quote;
+                document.getElementById('duration').textContent = data.time;
             })
             .catch(error => {
                 console.error('Error:', error.mess);
@@ -145,9 +130,8 @@
             }
 
         window.onload = function() {
-            populateStateDropdown('origin_state');
             populateStateDropdown('dest_state');
-            loadDataFromCookies();
+            loadDataFromCookies();            
             }
         
     </script>

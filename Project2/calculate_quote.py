@@ -35,7 +35,7 @@ all_config = {
     # More business types can be added with their specific configurations
 }
 
-GOOGLE_MAPS_API_KEY = "AIzaSyC2YoC_ujO9bCJAVHwM6RmHcVNOTXZE8HI"
+GOOGLE_MAPS_API_KEY = ""
 # types: restaurant, moving_company, courier_service, 
 # Not implemented cuz im lazy af: repair_service, event_planners
 business_type = "restaurant"

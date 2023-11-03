@@ -36,20 +36,6 @@ Our mission is to streamline the quote generation process for service-based busi
 - Personal Information Collection: Gathers essential customer details like name, phone number, and email address for future follow-ups and relationship building.
 - Cookie Management: Stores form data using cookies to retain user input even after the page refreshes, enhancing user convenience.
 - Interactive Menu Selection: For restaurant businesses, the web form includes an interactive menu for customers to select items, which influences the delivery time estimate.
-  
-## How It Works
-The user fills out a web form with details about the service they need, including addresses, desired service date and time, and personal information. The backend uses this information to calculate distance and time using the Google Maps API and then applies the business-specific pricing rules to generate a quote.
-
-### Setup
-To set up the project, follow these steps:
-
-- Ensure Python and Flask are installed on your system.
-- Obtain a Google Maps API key and set it in the configuration.
-- Configure the config.json file with your business specifics.
-- Run the Flask server using python calculate_quote.py.
-
-## Usage
-After starting the Flask app, navigate to the hosted web address. Choose the service type and fill in the required fields. Click "Get Quote" to receive the calculated quote based on the input provided.
 
 ## Customization
 Businesses can customize the quote calculation by adjusting the settings in the config.json file, such as base price, tiered distance rates, peak hours, and maximum allowed distance.
@@ -59,6 +45,20 @@ Businesses can customize the quote calculation by adjusting the settings in the 
 - Mandatory Selection Enforcement: The web form now enforces the selection of at least one menu item with real-time validation, prompting the user if the condition is not met.
 - Data Persistence: User selections, including menu items, are saved in cookies, allowing the form to remember the user's choices even after the page is refreshed.
 - Menu Configuration: The backend configuration now includes menu items with individual preparation times, which are factored into the delivery time estimates.
+
+## How It Works
+The user fills out a web form with details about the service they need, including addresses, desired service date and time, and personal information. The backend uses this information to calculate distance and time using the Google Maps API and then applies the business-specific pricing rules to generate a quote.
+
+## Setup
+To set up the project, follow these steps:
+
+- Ensure Python and Flask are installed on your system.
+- Obtain a Google Maps API key and set it in the configuration.
+- Configure the config.json file with your business specifics.
+- Run the Flask server using python calculate_quote.py.
+
+## Usage
+After starting the Flask app, navigate to the hosted web address. Choose the service type and fill in the required fields. Click "Get Quote" to receive the calculated quote based on the input provided.
 
 ## Dependencies
 - Flask

@@ -8,35 +8,34 @@ Our mission is to streamline the quote generation process for service-based busi
 
 ## Product User Stories
 
-### As a restaurant owner,
+### As a restaurant owner, (MVP)
 
 - I want to easily calculate delivery charges based on distance so that I can provide my customers with accurate quotes.
 - I need to limit delivery services to within a certain radius to ensure timely deliveries and maintain service quality.
 
-### As a moving company operator,
+### As a moving company operator, (not implemented)
 
 - I want to factor in peak hour traffic and out-of-state travel into my quotes to cover the additional costs incurred during busy times and longer trips.
 - I need a system that remembers repeat customers' details to make the booking process quicker and more personalized.
 
-### As a limo service provider,
+### As a limo service provider, (not implemented)
 
 - I want to offer instant quotes to my clients based on their travel needs, whether it's airport runs, city tours, or out-of-town trips, with a clear pricing structure that adapts to distance and time of the week.
 - I need to ensure that my pricing adjusts for peak event times, such as proms or weddings, when demand is higher.
 
-### As a customer,
+### As a customer, (MVP)
 
 - I want to receive a quick and clear quote for the service I am interested in without having to make a phone call or wait for an email response.
 - I need to feel secure in the information I provide online, knowing that my personal details are not being over-collected or misused.
 
-## Features
-- Interactive web form with HTML5 validation.
-- Calculates distance using the Google Maps API.
-- Configurable pricing tiers based on distance.
-- Peak hour pricing adjustments.
-- Out-of-state travel charge calculation.
-- User personal information collection for follow-ups.
-- Responsive design for mobile and tablet use.
-- Stores user input in cookies for session persistence.
+## Product Features
+- HTML/CSS/JS-based Web Form: A responsive web form that adapts to various devices, ensuring a seamless user experience across desktops, tablets, and smartphones.
+- Google Maps API Integration: Utilizes the Google Maps API to calculate distances between two points for accurate quote generation based on travel requirements.
+- Dynamic Quote Calculation: Factors in distance, time of the week, peak hours, and tiered pricing to provide customers with precise service quotes.
+- Business Type Customization: Supports different business types such as restaurants, moving companies, repair services, courier services, and event planners, with customized web forms and calculations.
+- Personal Information Collection: Gathers essential customer details like name, phone number, and email address for future follow-ups and relationship building.
+- Cookie Management: Stores form data using cookies to retain user input even after the page refreshes, enhancing user convenience.
+- Interactive Menu Selection: For restaurant businesses, the web form includes an interactive menu for customers to select items, which influences the delivery time estimate.
   
 ## How It Works
 The user fills out a web form with details about the service they need, including addresses, desired service date and time, and personal information. The backend uses this information to calculate distance and time using the Google Maps API and then applies the business-specific pricing rules to generate a quote.
@@ -54,6 +53,12 @@ After starting the Flask app, navigate to the hosted web address. Choose the ser
 
 ## Customization
 Businesses can customize the quote calculation by adjusting the settings in the config.json file, such as base price, tiered distance rates, peak hours, and maximum allowed distance.
+
+### Restaurant Specialized Functionalities
+- Menu Item Selection: Customers must select at least one menu item before submitting a quote request. This ensures that there's a clear service being provided and calculated for.
+- Mandatory Selection Enforcement: The web form now enforces the selection of at least one menu item with real-time validation, prompting the user if the condition is not met.
+- Data Persistence: User selections, including menu items, are saved in cookies, allowing the form to remember the user's choices even after the page is refreshed.
+- Menu Configuration: The backend configuration now includes menu items with individual preparation times, which are factored into the delivery time estimates.
 
 ## Dependencies
 - Flask

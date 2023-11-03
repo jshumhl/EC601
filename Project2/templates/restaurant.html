@@ -11,6 +11,13 @@
 
     <form id="quoteForm">
         <h2>Delivery Contact Form</h1>
+        <h3>Menu Items</h3>
+        {% for item in menu_items %}
+            <div class="menu-item">
+            <input type="checkbox" name="menu_items" value="{{ item.name }}" id="{{ item.name | replace(' ', '_') }}">
+            <label for="{{ item.name | replace(' ', '_') }}">{{ item.name }} - ${{ item.price }}</label>
+            </div>
+        {% endfor %}
         <h3>Personal Information</h3>
         <input type="text" id="customer_name" placeholder="Full Name" required><br>
         <input type="email" id="customer_email" placeholder="Email Address" required><br>
@@ -27,12 +34,17 @@
         </div>
 
         <h3>Delivery Date and Time</h3>
-        <input type="date" id="service_date" required>
-        <input type="time" id="service_time" required><br>
+        <input type="date" id="service_date" value="{{ today }}" required>
+        <input type="time" id="service_time" min="{{ opening_time }}" max="{{ closing_time }}" required>
+        <!--<input type="date" id="service_date" required>
+        <input type="time" id="service_time" required><br>-->
 
         <button type="submit">Get Quote</button>
-        <div id="distance"></div>
-        <div id="duration"></div>
+        <br>
+        <br>
+        <div id="distance" class="hidden"></div>
+        <div id="arrival" class="hidden"></div>
+        <div id="duration" class="hidden"></div>
     </form>
     
 
@@ -61,11 +73,24 @@
     <script>
         document.getElementById('quoteForm').addEventListener('submit', function(event) {
             event.preventDefault();
+
+            // Menu item selection validation
+            const checkboxes = document.querySelectorAll('input[name="menu_items"]:checked');
+            if (checkboxes.length === 0) {
+                alert('Please select at least one menu item.');
+                return; // Stop the function if validation fails
+            }
             
             // Construct addresses from individual fields
             const dest_address = `${document.getElementById('dest_street').value}, ${document.getElementById('dest_city').value}, ${document.getElementById('dest_state').value} ${document.getElementById('dest_zip').value}`;
 
+            // menu Items
+            const checkedMenuItems = Array.from(document.querySelectorAll('input[name="menu_items"]:checked')).map(item => item.value);
+
+            // data stuff
             const data = {
+                // Food ordered
+                menu_items: checkedMenuItems,
                 // Personal Info
                 customer_name: document.getElementById('customer_name').value,
                 customer_phone: document.getElementById('customer_phone').value,
@@ -94,7 +119,11 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('distance').textContent = data.quote;
-                document.getElementById('duration').textContent = data.time;
+                document.getElementById('distance').classList.remove('hidden');
+                document.getElementById('arrival').textContent = data.arrival;
+                document.getElementById('arrival').classList.remove('hidden');
+                //document.getElementById('duration').textContent = data.time;
+                //document.getElementById('duration').classList.remove('hidden');
             })
             .catch(error => {
                 console.error('Error:', error.mess);

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from flask import Flask, request, jsonify, render_template
 import googlemaps
@@ -17,7 +17,7 @@ general_config = {
 all_config = {
     "restaurant": {
         "base_price": 5,
-        "max_distance": 5,  # in miles
+        "max_distance": 15,  # in miles
         "business_address": "58 Beach St #2017, Boston, MA, 02111",
         "opening_time": "09:00",  # 9 AM
         "closing_time": "22:00",  # 10 PM
@@ -28,6 +28,23 @@ all_config = {
         "tier_2_price": 1,
         "tier_3_price": 1.2,
         "out_of_state_charge": 50,
+        "menu": [
+            {
+                "name": "Margherita Pizza",
+                "price": 12.99,
+                "prep_time": 20  # minutes
+            },
+            {
+                "name": "Caesar Salad",
+                "price": 8.99,
+                "prep_time": 10  # minutes
+            },
+            {
+                "name": "Spaghetti Carbonara",
+                "price": 15.99,
+                "prep_time": 25  # minutes
+            }
+            ],
     },
     "moving_company": {
         # Configurations specific to the moving company
@@ -40,16 +57,47 @@ GOOGLE_MAPS_API_KEY = ""
 # Not implemented cuz im lazy af: repair_service, event_planners
 business_type = "restaurant"
 config = all_config[business_type]
-template = business_type + '.html'
+
+
+
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return render_template(template)
+    template = business_type + '.html'
+    today = datetime.now().strftime("%Y-%m-%d")
+    if business_type == "restaurant":
+        opening_time = config['opening_time']
+        closing_time = config['closing_time']
+        menu_items = config['menu']
+        return render_template(template, today=today, opening_time=opening_time, closing_time=closing_time, menu_items=menu_items)
+    else:
+        return render_template(template)
 
-def calculate_distance(address_1, address_2=None, service_datetime=None):
+
+# Function to calculate the clock time when the delivery is expected to arrive
+def calculate_expected_arrival_time(user_delivery_datetime, longest_prep_time, travel_duration_minutes):
+    # Parse the user-specified delivery datetime
+    service_datetime = datetime.strptime(user_delivery_datetime, "%Y-%m-%d %H:%M")
+
+    # Check if the user-specified time is in the future
+    if service_datetime < datetime.now():
+        raise ValueError("The specified delivery time is in the past!")
+
+    # Add the longest preparation time to the user-specified delivery time
+    departure_time = service_datetime + timedelta(minutes=longest_prep_time)
+
+    # Add the travel duration to the departure time to get the arrival time
+    expected_arrival_time = departure_time + timedelta(minutes=travel_duration_minutes)
+
+    # Format the expected arrival time to a string that shows the clock time
+    expected_arrival_clock_time = expected_arrival_time.strftime("%H:%M")
+
+    return expected_arrival_clock_time
+
+def calculate_distance(address_1, address_2=None, service_datetime=None, longest_prep_time=None):
     # If address_2 is not provided, use a default address (for businesses like restaurants)
     if not address_2:
         address_2 = "DEFAULT_BUSINESS_ADDRESS"
@@ -61,9 +109,12 @@ def calculate_distance(address_1, address_2=None, service_datetime=None):
         # Check if the service_datetime is in the past
         if service_datetime < datetime.now():
             raise ValueError('The service date and time must be in the future.')
+        if business_type == "restaurant":
+            service_datetime += timedelta(minutes=longest_prep_time)
         departure_timestamp = int(service_datetime.timestamp())
     else:
         departure_timestamp = None
+        
 
     # Get directions between the two addresses
     directions_result = gmaps.directions(
@@ -117,7 +168,7 @@ def calculate_cost(distance, time_of_week, out_of_state):
     current_hour = datetime.now().hour
     if (general_config["peak_start"] <= current_hour <= general_config["peak_end"] or
         general_config["evening_peak_start"] <= current_hour <= general_config["evening_peak_end"]):
-        peak_multiplier = general_config["peak_multiplier"]
+        peak_multiplier = config["peak_multiplier"]
     else:
         peak_multiplier = 1
 
@@ -146,6 +197,8 @@ def calculate_quote():
     if business_type == "restaurant":
         origin_address = config["business_address"]
         out_of_state = False
+        selected_items = data.get('menu_items')
+        max_prep_times = max([item['prep_time'] for item in config["menu"] if item['name'] in selected_items])  
     else:
         origin_address = f"{data['origin_address']}"
         out_of_state = data['origin_state'] != data['dest_state']
@@ -153,9 +206,6 @@ def calculate_quote():
     print(origin_address)
     print(dest_address)
 
-    # Determine out-of-state condition
-    
-    
     # Extract service date and time and determine if it's a weekday or weekend
     service_datetime_str = f"{data['service_date']} {data['service_time']}"
     service_datetime = datetime.strptime(service_datetime_str, "%Y-%m-%d %H:%M")
@@ -165,7 +215,12 @@ def calculate_quote():
         time_of_week = "weekend"
     
     # Calculate distance using Google Maps API (pseudo-code for now)
-    distance, p2ptime = calculate_distance(origin_address, dest_address, service_datetime)
+    if business_type == "restaurant":
+        distance, p2ptime = calculate_distance(origin_address, dest_address, service_datetime, max_prep_times)
+        expected_arrival_clock_time = calculate_expected_arrival_time(service_datetime_str, max_prep_times, p2ptime)
+    else:
+        expected_arrival_clock_time = service_datetime + timedelta(minutes=p2ptime)
+        distance, p2ptime = calculate_distance(origin_address, dest_address, service_datetime)
     print("distance:", distance)
     print("time:", p2ptime)
     
@@ -176,12 +231,15 @@ def calculate_quote():
         duration = ""
     else:
         quote = "Estimated quote is: $" + str(cost)
-        duration = 'The approximate time is ' + str(p2ptime) + ' minutes';
+        arrival_time = "Estimated arrival time is " + str(expected_arrival_clock_time)
+        #duration = 'The approximate time is ' + str(p2ptime) + ' minutes'
+        
     print("quote:", quote)
     
     return jsonify({
         'quote': quote, 
-        'time': duration
+        'arrival': arrival_time,
+        #'time': duration
     })
 
 

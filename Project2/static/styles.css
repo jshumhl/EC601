@@ -1,4 +1,9 @@
 /* Global Styles */
+
+.hidden {
+    display: none; /* This class will hide the element */
+  }
+  
 body {
     font-family: 'Arial', sans-serif;
     padding: 5%;
@@ -26,6 +31,21 @@ form {
     border-radius: 5px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
+
+#distance, #arrival, #duration {
+    color: #333;
+    background-color: #f8f8f8; /* Light grey background */
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 10px; /* Some padding around the content */
+    margin-bottom: 10px; /* Space between the divs */
+    text-align: center; /* Center the text */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  /* If you want to make them look like cards */
+  #distance, #arrival, #duration {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* A subtle shadow */
+  }
 
 input[type="tel"],
 input[type="email"],

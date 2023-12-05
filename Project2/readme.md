@@ -67,11 +67,13 @@ After starting the Flask app, navigate to the hosted web address. Choose the ser
 
 ## Demo
 The first image is an empty form after running the command `python calculate_quote.py`. This is a Delivery Contact Form. A customer may choose the food using the checkbox. Each food in the backend has a food-preparation time for it that would be added for future use. Then Personal Information and Delievery Address would be prompted for food delievery purpose. Selecting the Date and Time will send the information to the backend for calculation.
-<img width="554" alt="empty_form" src="[https://github.com/jshumhl/EC601/Project2/demo/empty_form.png](https://github.com/jshumhl/EC601/blob/main/Project2/demo/empty_form.png)">
+<img width="554" alt="empty_form" src="https://github.com/jshumhl/EC601/assets/71789623/336ea26a-66bb-4f94-8f68-315429dc9768">
+
 In the backend calculation part, the function takes the food preparation time, if its a busy hour (dinner/lunch), add the busy hour extra time to calculate when the food driver need to leave the store. Then combine with MAPS API to calculate the distance to delievery address, and extra time due to busy traffic (MAPS API) to accomodate extra quote time shown on the completed form. All these Personal Information, Destination Address, and Food Order Details are saved in the website cookies for easy access from the customer and track the order. A copy of the information is also saved in the database for restaurant to keep track of the delievery order.
-<img width="554" alt="empty_form" src="[https://github.com/jshumhl/EC601/Project2/demo/filled_form.png](https://github.com/jshumhl/EC601/blob/main/Project2/demo/empty_form.png)">
+<img width="544" alt="filled_form" src="https://github.com/jshumhl/EC601/assets/71789623/b9ac60f3-2ed7-4854-a0e5-188e6718da42">
+
 ## License
-Uncertain haha
+MIT liscence
 
 ## Contact
 - Author: Hin Lui Shum
